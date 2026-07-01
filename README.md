@@ -48,3 +48,7 @@ npm run dev
 - Cash App Lightning help: <https://cash.app/help/us/en-US/6506-bitcoin-lightning>
 - Cash App Bitcoin send/receive help: <https://cash.app/help/us/en-us/31021-sending-and-receiving-bitcoin>
 - Lightning invoice URI background: <https://docs.lightning.engineering/the-lightning-network/payment-lifecycle/understanding-lightning-invoices>
+
+## License
+
+MIT
