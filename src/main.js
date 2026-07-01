@@ -67,7 +67,7 @@ function inspectInvoice(invoice) {
     return {
       network: "Unrecognized",
       amount: "Unknown",
-      note: "This does not look like a BOLT11 invoice yet.",
+      note: "Not a BOLT11 invoice yet.",
       usable: false
     };
   }
@@ -76,7 +76,7 @@ function inspectInvoice(invoice) {
     return {
       network: networkLabel(networkCode),
       amount: amountLabel(amountPart),
-      note: "BOLT11 invoices are Bech32 and cannot be mixed case.",
+      note: "BOLT11 cannot be mixed case.",
       usable: false
     };
   }
@@ -85,7 +85,7 @@ function inspectInvoice(invoice) {
     return {
       network: networkLabel(networkCode),
       amount: amountLabel(amountPart),
-      note: "Cash App Lightning payments are expected to use Bitcoin mainnet lnbc invoices.",
+      note: "Cash App expects mainnet lnbc invoices.",
       usable: true
     };
   }
@@ -94,7 +94,7 @@ function inspectInvoice(invoice) {
     return {
       network: networkLabel(networkCode),
       amount: "Amountless",
-      note: "Amountless invoices may work, but amounted invoices are easier to test cleanly.",
+      note: "Amounted invoices are easiest to test.",
       usable: true
     };
   }
@@ -102,7 +102,7 @@ function inspectInvoice(invoice) {
   return {
     network: networkLabel(networkCode),
     amount: amountLabel(amountPart),
-    note: "Ready. Tap from a phone with Cash App installed or scan the QR code.",
+    note: "Ready. Tap Open Cash App or scan the QR.",
     usable: true
   };
 }
@@ -145,7 +145,7 @@ function formatNumber(value) {
 }
 
 async function getSampleInvoice() {
-  setSampleLoading(true, "Requesting a fresh 1 sat invoice...");
+  setSampleLoading(true, "Requesting 1 sat invoice...");
 
   try {
     const payRequest = await fetchLightningAddress(SAMPLE_LIGHTNING_ADDRESS);
@@ -168,7 +168,7 @@ async function getSampleInvoice() {
 
     refs.invoiceInput.value = invoiceResponse.pr;
     render();
-    setSampleLoading(false, "Loaded a fresh 1 sat invoice from austin@vlt.ge.");
+    setSampleLoading(false, "Loaded fresh 1 sat invoice.");
   } catch (error) {
     setSampleLoading(false, error.message || "Could not generate a sample invoice.");
   }
@@ -198,7 +198,7 @@ function validatePayRequest(payRequest) {
 
 function setSampleLoading(isLoading, message) {
   refs.sampleInvoiceButton.disabled = isLoading;
-  refs.sampleInvoiceButton.textContent = isLoading ? "Getting invoice..." : "Get 1 sat invoice";
+  refs.sampleInvoiceButton.textContent = isLoading ? "Getting..." : "Get 1 sat";
   refs.sampleStatus.textContent = message;
 }
 
@@ -211,7 +211,7 @@ function render() {
   refs.networkValue.textContent = inspection.network;
   refs.amountValue.textContent = inspection.amount;
   refs.invoiceNote.textContent = inspection.note;
-  refs.cashAppUrl.textContent = cashAppUrl || "Paste an invoice to generate a Cash App link.";
+  refs.cashAppUrl.textContent = cashAppUrl || "Paste an invoice to generate a link.";
 
   refs.openCashAppLink.href = cashAppUrl || "#";
   refs.openCashAppLink.classList.toggle("disabled", !cashAppUrl);

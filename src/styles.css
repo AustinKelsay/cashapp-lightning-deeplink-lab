@@ -193,6 +193,11 @@ textarea:focus {
   overflow-wrap: anywhere;
 }
 
+.sample-address {
+  font-size: 13px;
+  padding-top: 4px;
+}
+
 .sample-status {
   color: #1f6f8b;
   font-size: 13px;
