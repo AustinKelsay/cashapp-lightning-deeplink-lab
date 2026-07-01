@@ -1,0 +1,6 @@
+.DS_Store
+.vercel
+.vite.log
+.vite.pid
+dist
+node_modules

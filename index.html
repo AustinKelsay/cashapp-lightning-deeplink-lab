@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A small demo showing how to deep link a BOLT11 Lightning invoice into Cash App."
+    />
+    <title>Cash App Lightning Invoice Deep Link</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="hero">
+        <p class="eyebrow">Confirmed demo flow</p>
+        <h1>Open a Lightning invoice directly in Cash App</h1>
+        <p class="hero-copy">
+          Paste a BOLT11 invoice and this page builds the universal link that hands it to Cash App:
+          <code>https://cash.app/launch/lightning/&lt;bolt11&gt;</code>
+        </p>
+      </header>
+
+      <main class="page-grid">
+        <section class="tool-panel" aria-labelledby="tool-heading">
+          <div class="section-heading">
+            <p class="eyebrow">Try it</p>
+            <h2 id="tool-heading">Build the link</h2>
+          </div>
+
+          <label class="invoice-label" for="invoice-input">BOLT11 invoice</label>
+          <textarea
+            id="invoice-input"
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="lnbc..."
+          ></textarea>
+
+          <div class="sample-invoice">
+            <div>
+              <p class="eyebrow">Need a test invoice?</p>
+              <p>Generate a fresh 1 sat invoice from <strong>austin@vlt.ge</strong>, then open it in Cash App.</p>
+              <p id="sample-status" class="sample-status" aria-live="polite"></p>
+            </div>
+            <button id="sample-invoice-button" type="button" class="secondary">Get 1 sat invoice</button>
+          </div>
+
+          <div class="actions">
+            <a id="open-cashapp-link" class="primary-action disabled" href="#">Open in Cash App</a>
+            <button id="copy-link-button" type="button" class="secondary" disabled>Copy link</button>
+            <button id="copy-invoice-button" type="button" class="secondary" disabled>Copy invoice</button>
+          </div>
+
+          <div class="result-box">
+            <div>
+              <p class="eyebrow">Generated URL</p>
+              <code id="cashapp-url">Paste an invoice to generate a Cash App link.</code>
+            </div>
+          </div>
+        </section>
+
+        <aside class="qr-panel" aria-labelledby="qr-heading">
+          <div class="section-heading">
+            <p class="eyebrow">Scan</p>
+            <h2 id="qr-heading">Phone handoff</h2>
+          </div>
+          <div class="qr-frame">
+            <canvas id="qr-canvas" aria-label="Generated Cash App link QR code"></canvas>
+          </div>
+          <dl class="invoice-facts">
+            <div>
+              <dt>Network</dt>
+              <dd id="network-value">Empty</dd>
+            </div>
+            <div>
+              <dt>Amount</dt>
+              <dd id="amount-value">Empty</dd>
+            </div>
+          </dl>
+          <p id="invoice-note" class="invoice-note">Use a fresh, low-value mainnet invoice.</p>
+        </aside>
+
+        <section class="method-panel" aria-labelledby="method-heading">
+          <div class="section-heading">
+            <p class="eyebrow">Methodology</p>
+            <h2 id="method-heading">What this demo is proving</h2>
+          </div>
+          <ol class="method-list">
+            <li>
+              <strong>Start with a normal BOLT11 invoice.</strong>
+              The invoice should usually be a Bitcoin mainnet invoice beginning with <code>lnbc</code>.
+            </li>
+            <li>
+              <strong>URL-encode the invoice.</strong>
+              The exact invoice string is appended to <code>https://cash.app/launch/lightning/</code>.
+            </li>
+            <li>
+              <strong>Open from a direct user tap.</strong>
+              On a phone with Cash App installed, the universal link can open Cash App with the payment loaded.
+            </li>
+            <li>
+              <strong>Keep a manual fallback.</strong>
+              If the universal link fails, copy the BOLT11 invoice and paste it into Cash App's Lightning flow.
+            </li>
+            <li>
+              <strong>Optional sample invoice.</strong>
+              The demo can request a 1 sat invoice from <code>austin@vlt.ge</code> by resolving its
+              Lightning Address and calling the LNURL-pay callback with <code>amount=1000</code> millisats.
+            </li>
+          </ol>
+        </section>
+
+        <section class="implementation-panel" aria-labelledby="implementation-heading">
+          <div class="section-heading">
+            <p class="eyebrow">Recipe</p>
+            <h2 id="implementation-heading">Implementation shape</h2>
+          </div>
+          <pre><code>const cashAppLightningUrl =
+  `https://cash.app/launch/lightning/${encodeURIComponent(bolt11)}`;</code></pre>
+          <p>
+            This page does all parsing and link generation in the browser. It does not send invoice
+            strings to this app's server, store them, or attempt to pay anything automatically.
+          </p>
+          <div class="source-links">
+            <a href="https://sdk-doc-spark.breez.technology/guide/buy_bitcoin.html#cashapp">Breez Spark SDK note</a>
+            <a href="https://cash.app/help/us/en-US/6506-bitcoin-lightning">Cash App Lightning help</a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
