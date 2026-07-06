@@ -13,7 +13,9 @@ const refs = {
   copyLinkButton: document.querySelector("#copy-link-button"),
   copyInvoiceButton: document.querySelector("#copy-invoice-button"),
   cashAppUrl: document.querySelector("#cashapp-url"),
+  qrFrame: document.querySelector(".qr-frame"),
   qrCanvas: document.querySelector("#qr-canvas"),
+  qrPlaceholder: document.querySelector("#qr-placeholder"),
   networkValue: document.querySelector("#network-value"),
   amountValue: document.querySelector("#amount-value"),
   invoiceNote: document.querySelector("#invoice-note")
@@ -57,7 +59,7 @@ function inspectInvoice(invoice) {
   const lower = invoice.toLowerCase();
   const isLower = invoice === lower;
   const isUpper = invoice === invoice.toUpperCase();
-  const hrpEnd = lower.indexOf("1");
+  const hrpEnd = lower.lastIndexOf("1");
   const hrp = hrpEnd > -1 ? lower.slice(0, hrpEnd) : "";
   const body = hrp.startsWith("ln") ? hrp.slice(2) : "";
   const networkCode = ["bcrt", "bc", "tbs", "tb", "bs"].find((code) => body.startsWith(code));
@@ -134,6 +136,7 @@ function amountLabel(amountPart) {
   const sats = Number(match[1]) * unitsToSats[match[2]];
 
   if (!Number.isFinite(sats)) return "Unparsed";
+  if (sats === 1) return "1 sat";
   if (sats >= 1) return `${formatNumber(sats)} sats`;
   return `${sats} sats`;
 }
@@ -213,8 +216,14 @@ function render() {
   refs.invoiceNote.textContent = inspection.note;
   refs.cashAppUrl.textContent = cashAppUrl || "Paste an invoice to generate a link.";
 
-  refs.openCashAppLink.href = cashAppUrl || "#";
+  if (cashAppUrl) {
+    refs.openCashAppLink.href = cashAppUrl;
+  } else {
+    refs.openCashAppLink.removeAttribute("href");
+  }
   refs.openCashAppLink.classList.toggle("disabled", !cashAppUrl);
+  refs.openCashAppLink.setAttribute("aria-disabled", String(!cashAppUrl));
+  refs.openCashAppLink.tabIndex = cashAppUrl ? 0 : -1;
   refs.copyLinkButton.disabled = !cashAppUrl;
   refs.copyInvoiceButton.disabled = !invoice;
 
@@ -226,15 +235,17 @@ function renderQr(value) {
   context.clearRect(0, 0, refs.qrCanvas.width, refs.qrCanvas.height);
 
   if (!value) {
-    refs.qrCanvas.width = 184;
-    refs.qrCanvas.height = 184;
-    refs.qrCanvas.className = "empty-qr";
+    refs.qrCanvas.hidden = true;
+    refs.qrPlaceholder.hidden = false;
     return;
   }
 
+  const size = getQrSize();
+  refs.qrCanvas.hidden = false;
+  refs.qrPlaceholder.hidden = true;
   refs.qrCanvas.className = "";
   QRCode.toCanvas(refs.qrCanvas, value, {
-    width: 184,
+    width: size,
     margin: 2,
     errorCorrectionLevel: "M",
     color: {
@@ -242,8 +253,14 @@ function renderQr(value) {
       light: "#ffffff"
     }
   }).catch(() => {
-    refs.qrCanvas.className = "empty-qr";
+    refs.qrCanvas.hidden = true;
+    refs.qrPlaceholder.hidden = false;
   });
+}
+
+function getQrSize() {
+  const frameWidth = refs.qrFrame?.clientWidth || 224;
+  return Math.round(Math.min(232, Math.max(176, frameWidth - 36)));
 }
 
 async function copyText(value, button) {
@@ -298,6 +315,10 @@ refs.copyLinkButton.addEventListener("click", () => {
 
 refs.copyInvoiceButton.addEventListener("click", () => {
   copyText(currentInvoice(), refs.copyInvoiceButton);
+});
+
+window.addEventListener("resize", () => {
+  window.requestAnimationFrame(render);
 });
 
 render();

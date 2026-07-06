@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta
       name="description"
       content="Turn a BOLT11 Lightning invoice into a Cash App deep link."
@@ -46,7 +46,7 @@
           </div>
 
           <div class="actions">
-            <a id="open-cashapp-link" class="primary-action disabled" href="#">Open Cash App</a>
+            <a id="open-cashapp-link" class="primary-action disabled">Open Cash App</a>
             <button id="copy-link-button" type="button" class="secondary" disabled>Copy link</button>
             <button id="copy-invoice-button" type="button" class="secondary" disabled>Copy invoice</button>
           </div>
@@ -66,6 +66,7 @@
           </div>
           <div class="qr-frame">
             <canvas id="qr-canvas" aria-label="Generated Cash App link QR code"></canvas>
+            <span id="qr-placeholder" class="qr-placeholder">QR appears after an invoice</span>
           </div>
           <dl class="invoice-facts">
             <div>
